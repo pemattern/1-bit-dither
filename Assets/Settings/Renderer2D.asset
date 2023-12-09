@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ebdaa07385d4509eb284c158185f08e, type: 3}
   m_Name: DitheredShadows
   m_EditorClassIdentifier: 
-  m_Active: 1
-  _renderPassEvent: 1000
+  m_Active: 0
   _ditheredShadowsMaterial: {fileID: 2100000, guid: 8286026dfcb639ddb9c419a41d05215f, type: 2}
+  _renderPassEvent: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
