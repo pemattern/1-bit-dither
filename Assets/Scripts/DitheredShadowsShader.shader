@@ -4,6 +4,7 @@ Shader "PaulMattern/DitheredShadowsShader"
     {
         _BaseMap ("Base Texture", 2D) = "white" {}
         _LightTex ("Light Texture", 2D) = "white" {}
+        _BlueNoiseTex ("Blue Noise Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -17,17 +18,18 @@ Shader "PaulMattern/DitheredShadowsShader"
 
             HLSLPROGRAM
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            //#include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             
             #pragma vertex Vert
             #pragma fragment Frag
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
+
             TEXTURE2D(_LightTex);
             SAMPLER(sampler_LightTex);
 
-            //float4 _ScreenParams;
+            TEXTURE2D(_BlueNoiseTex);
+            SAMPLER(sampler_BlueNoiseTex);
 
             float bayer2(float2 uv)
             {
@@ -82,8 +84,10 @@ Shader "PaulMattern/DitheredShadowsShader"
                 float2 distorted_uv = (pixel_position + distortion) / screen_size;
                 float4 main_color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 float4 light_color = SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, distorted_uv);
+                float4 noise_color = SAMPLE_TEXTURE2D(_BlueNoiseTex, sampler_BlueNoiseTex, float2(pixel_position.x / 256, pixel_position.y / 256));
                 
-                float4 color = (bayer64(pixel_position) < light_color) ? main_color : float4(0, 0, 0, 1);
+                float4 color = (noise_color < light_color) ? main_color : main_color * float4(0.03, 0.03, 0.1, 1);
+                //float4 color = (bayer64(pixel_position) < light_color) ? main_color : main_color * float4(0.03, 0.03, 0.1, 1);
                 return color;
             }
             ENDHLSL
