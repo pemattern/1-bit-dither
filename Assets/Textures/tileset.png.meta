@@ -189,6 +189,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: tileset_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71ad6bd4c3731eaa592a94d1adb93c6a
+      internalID: -475459716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -204,6 +225,7 @@ TextureImporter:
       tileset_1: 6007627129536956325
       tileset_2: -7486092956772349302
       tileset_3: 891396114
+      tileset_4: -475459716
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

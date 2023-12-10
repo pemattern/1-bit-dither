@@ -84,10 +84,10 @@ Shader "PaulMattern/DitheredShadowsShader"
                 float2 distorted_uv = (pixel_position + distortion) / screen_size;
                 float4 main_color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 float4 light_color = SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, distorted_uv);
-                float4 noise_color = SAMPLE_TEXTURE2D(_BlueNoiseTex, sampler_BlueNoiseTex, float2(pixel_position.x / 256, pixel_position.y / 256));
+                //float4 noise_color = SAMPLE_TEXTURE2D(_BlueNoiseTex, sampler_BlueNoiseTex, float2(pixel_position.x / 256, pixel_position.y / 256));
                 
-                float4 color = (noise_color < light_color) ? main_color : main_color * float4(0.03, 0.03, 0.1, 1);
-                //float4 color = (bayer64(pixel_position) < light_color) ? main_color : main_color * float4(0.03, 0.03, 0.1, 1);
+                //float4 color = (noise_color < light_color) ? main_color : main_color * float4(0.03, 0.03, 0.1, 1);
+                float4 color = (bayer64(pixel_position) < light_color) ? main_color.r : main_color.b;
                 return color;
             }
             ENDHLSL
