@@ -28,7 +28,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 8400000, guid: 06962dae5a5f4a8998a6b89f4963fa74, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseTex:
@@ -47,8 +47,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _FogOfWarTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LightTex:
-        m_Texture: {fileID: 8400000, guid: e8924c085dbdbf2119db6d9c46a74ec2, type: 2}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -63,11 +67,23 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WorldTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DarkColor1: {r: 0.5529412, g: 0.4117647, b: 0.47843137, a: 1}
+    - _DarkColor2: {r: 0.32941177, g: 0.30588236, b: 0.40784314, a: 1}
+    - _DarkColor3: {r: 0.1254902, g: 0.23529412, b: 0.3372549, a: 1}
+    - _DarkColor4: {r: 0.050980393, g: 0.16862746, b: 0.27058825, a: 1}
+    - _LightColor1: {r: 1, g: 0.9254902, b: 0.8392157, a: 1}
+    - _LightColor2: {r: 1, g: 0.83137256, b: 0.6392157, a: 1}
+    - _LightColor3: {r: 1, g: 0.6666667, b: 0.36862746, a: 1}
+    - _LightColor4: {r: 0.8156863, g: 0.5058824, b: 0.34901962, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
