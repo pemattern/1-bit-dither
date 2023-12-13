@@ -77,7 +77,7 @@ public class DispatchPostProcessingShaders : MonoBehaviour
 
     void OnEndContextRendering(ScriptableRenderContext context, List<Camera> cameras)
     {
-        Graphics.Blit(_combinationTex, _mat, 0);
+        CommandBufferPool.Get().Blit(null, _combinationTex, _mat, 0);
     }
 
     void OnDestroy()
