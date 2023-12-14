@@ -81,7 +81,7 @@ Material:
     - _DistortionAmplitude: 1
     - _DistortionSpeed: 1
     - _EnableExternalAlpha: 0
-    - _GradientModifier: 0.3
+    - _GradientModifier: 0.2
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DarkColor1: {r: 0.5529412, g: 0.4117647, b: 0.47843137, a: 1}

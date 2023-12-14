@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(RawImage))]
 public class DispatchPostProcessingShaders : MonoBehaviour
 {
     const int SHADES_COUNT = 4;
@@ -10,18 +11,32 @@ public class DispatchPostProcessingShaders : MonoBehaviour
     [SerializeField] int _pixelsPerUnit;
     [SerializeField] Material _mat;
     [SerializeField] Camera _worldCamera, _lightCamera;
-    [SerializeField] Color[] _lightColors;
-    [SerializeField] Color[] _darkColors;
+    [SerializeField] DitheringPattern _ditheringPattern;
+    [SerializeField] float _distortionSpeed, _distortionAmplitude, _gradientModifier;
+    [SerializeField] Color[] _lightColors, _darkColors;
     RawImage _rawImage;
     RenderTexture _worldTex, _lightTex, _combinationTex;
     Texture2D _colorPaletteTex;
     
-    void Awake()
+    void OnEnable()
+    {
+        RenderPipelineManager.endContextRendering += OnEndContextRendering;
+    }
+
+    void Start() {
+        _rawImage = GetComponent<RawImage>();
+        if (_rawImage != null) Setup();
+    }
+
+    void OnValidate()
+    {
+        if (_rawImage != null) Setup();
+    }
+
+    void Setup()
     {
         if (_lightColors.Length != SHADES_COUNT || _darkColors.Length != SHADES_COUNT)
             throw new System.Exception("There must be exactly 4 light/dark colors.");
-
-        _rawImage = GetComponent<RawImage>();
 
         _combinationTex = new RenderTexture(_internalResolution.x, _internalResolution.y, 32, RenderTextureFormat.ARGB32)
         {
@@ -40,12 +55,12 @@ public class DispatchPostProcessingShaders : MonoBehaviour
 
         _worldCamera.targetTexture = _worldTex;
         _lightCamera.targetTexture = _lightTex;
+        _rawImage.texture = _combinationTex;
 
         float orthographicSize = _internalResolution.y / (float)_pixelsPerUnit / 2f;
         _worldCamera.orthographicSize = orthographicSize;
         _lightCamera.orthographicSize = orthographicSize;
-        
-        _rawImage.texture = _combinationTex;
+
         _mat.SetTexture("_WorldTex", _worldTex);
         _mat.SetTexture("_LightTex", _lightTex);
         _mat.SetTexture("_ColorPaletteTex", _colorPaletteTex);
@@ -53,7 +68,10 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         _mat.SetInteger("_InternalResolutionWidth", _internalResolution.x);
         _mat.SetInteger("_InternalResolutionHeight", _internalResolution.y);
 
-        RenderPipelineManager.endContextRendering += OnEndContextRendering;
+        _mat.SetFloat("_DistortionSpeed", _distortionSpeed);
+        _mat.SetFloat("_DistortionAmplitude", _distortionAmplitude);
+        _mat.SetFloat("_GradientModifier", _gradientModifier); 
+        _mat.SetInteger("_DitheringPattern", (int)_ditheringPattern);
     }
 
     Texture2D GenerateColorPaletteTex()
@@ -80,8 +98,15 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         CommandBufferPool.Get().Blit(null, _combinationTex, _mat, 0);
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         RenderPipelineManager.endContextRendering -= OnEndContextRendering;
+    }
+
+    enum DitheringPattern
+    {
+        Bayer2x2,
+        Bayer4x4,
+        Bayer8x8
     }
 }
