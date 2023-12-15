@@ -65,9 +65,6 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         _mat.SetTexture("_LightTex", _lightTex);
         _mat.SetTexture("_ColorPaletteTex", _colorPaletteTex);
 
-        _mat.SetInteger("_InternalResolutionWidth", _internalResolution.x);
-        _mat.SetInteger("_InternalResolutionHeight", _internalResolution.y);
-
         _mat.SetFloat("_DistortionSpeed", _distortionSpeed);
         _mat.SetFloat("_DistortionAmplitude", _distortionAmplitude);
         _mat.SetFloat("_GradientModifier", _gradientModifier); 

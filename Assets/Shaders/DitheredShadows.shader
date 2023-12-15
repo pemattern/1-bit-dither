@@ -1,4 +1,4 @@
-Shader "PaulMattern/DitheredShadowsShader"
+Shader "PaulMattern/DitheredShadows"
 {
     Properties
     {
@@ -31,13 +31,13 @@ Shader "PaulMattern/DitheredShadowsShader"
             TEXTURE2D(_ColorPaletteTex);
             SAMPLER(sampler_ColorPaletteTex);
 
-            int _InternalResolutionWidth;
-            int _InternalResolutionHeight;
             int _DitheringPattern;
 
             float _DistortionSpeed;
             float _DistortionAmplitude;
             float _GradientModifier;
+
+            float4 _WorldTex_TexelSize;
             
             static const float BAYER_2x2[2][2] = {
                 { 0.0,  0.5  },
@@ -84,10 +84,9 @@ Shader "PaulMattern/DitheredShadowsShader"
 
             float4 Frag(VertexOutput i) : SV_Target
             {
-                float2 internal_resolution = float2(_InternalResolutionWidth, _InternalResolutionHeight);
-                float2 pixel_position = floor(i.uv * internal_resolution);
+                float2 pixel_position = floor(i.uv * _WorldTex_TexelSize.zw);
                 float2 distortion = round(float2(sin(pixel_position.x * _Time.y * 0.01 * _DistortionSpeed), sin(pixel_position.y * _Time.y * 0.013 * _DistortionSpeed)) * _DistortionAmplitude);
-                float2 distorted_uv = (pixel_position + distortion) / internal_resolution;
+                float2 distorted_uv = (pixel_position + distortion) / _WorldTex_TexelSize.zw;
                 float4 world_color = SAMPLE_TEXTURE2D(_WorldTex, sampler_WorldTex, i.uv);
                 float light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, distorted_uv), _GradientModifier);
                 
@@ -100,7 +99,7 @@ Shader "PaulMattern/DitheredShadowsShader"
                     dither_shade = BAYER_8x8[int(pixel_position.x % 8)][int(pixel_position.y % 8)];   
 
                 float4 color = (dither_shade < light_color) ?
-                    SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2(world_color.r, 0.25)) : 
+                    world_color : 
                     SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2(world_color.b, 0.75));
                 return color;
             }
