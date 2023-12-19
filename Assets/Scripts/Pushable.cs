@@ -3,7 +3,6 @@ using UnityEngine;
 public class Pushable : MonoBehaviour
 {
     [SerializeField] GameObject _parent;
-    Awaitable _move;
 
     public bool TryPush(Vector3 direction)
     {
@@ -11,14 +10,14 @@ public class Pushable : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(target, 0.25f);
         if (colliders.Length == 0)
         {
-            _move = Lerper.MoveTo(_parent, direction);
+            MovementScheduler.Add(_parent.transform, direction);
             return true;
         }
         if (colliders[0].TryGetComponent(out Pushable other))
         {
             if (other.TryPush(direction))
             {
-                _move = Lerper.MoveTo(_parent, direction);
+                MovementScheduler.Add(_parent.transform, direction);
                 return true;
             }
             return false;

@@ -1,16 +1,22 @@
+using System;
+using System.Collections;
 using UnityEngine;
-public static class Lerper
+public class Lerper : MonoBehaviour
 {
-    const float LERP_SPEED = 8;
+    private static Lerper _instance;
+    [SerializeField] private float _lerpSpeed = 10;
 
-    public static async Awaitable MoveTo(GameObject gameObject, Vector3 direction)
+    void Awake() { _instance = this; }
+
+    public static IEnumerator MoveTo(Transform transform, Vector3 direction, Action completionCallback)
     {
-        Vector3 target = gameObject.transform.position + direction;
-        while(Vector3.Distance(gameObject.transform.position, target) > 0.05f)
+        Vector3 target = transform.position + direction;
+        while(Vector3.Distance(transform.position, target) > 0.05f)
         {
-            gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target, Time.deltaTime * LERP_SPEED);
-            await Awaitable.NextFrameAsync();
+            transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * _instance._lerpSpeed);
+            yield return null;
         }
-        gameObject.transform.position = new Vector3(Mathf.RoundToInt(target.x), Mathf.RoundToInt(target.y), 0f);
+        transform.position = new Vector3(Mathf.RoundToInt(target.x), Mathf.RoundToInt(target.y), 0f);
+        completionCallback();
     }
 }

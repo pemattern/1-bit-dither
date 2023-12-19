@@ -1,46 +1,54 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class LightProber : MonoBehaviour
 {
-    public static LightProber Instance;
-    Camera _lightCamera;
-    public Texture2D _lightTexture2D;
+    private static LightProber _instance;
+    private Camera _lightCamera;
+    private Texture2D _lightTexture2D;
+    private int _width, _height;
     void Awake()
     {
-        Instance = this;
+        _instance = this;
+    }
+    void OnEnable()
+    {
+        MovementScheduler.OnCompletedMove += UpdateLightTexture;
     }
     void Start()
     {
         _lightCamera = GetComponent<Camera>();
+        _width = _lightCamera.targetTexture.width;
+        _height = _lightCamera.targetTexture.height;
     }
 
-    public void Update()
+    private void UpdateLightTexture()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-            Debug.Log(GetIntensity(new Vector3(0, 0, 0)));
-    }
-
-    public float GetIntensity(Vector3 position)
-    {
-        int width = _lightCamera.targetTexture.width;
-        int height = _lightCamera.targetTexture.height;
-
         RenderTexture.active = _lightCamera.targetTexture;
-        _lightTexture2D = new Texture2D(width,
-            height,
+        _lightTexture2D = new Texture2D(
+            _width,
+            _height,
             UnityEngine.Experimental.Rendering.DefaultFormat.LDR, 
             UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
-        _lightTexture2D.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        _lightTexture2D.ReadPixels(new Rect(0, 0, _width, _height), 0, 0);
         _lightTexture2D.Apply();
         RenderTexture.active = null;
+    }
 
-        Vector3 uv = _lightCamera.WorldToViewportPoint(position);
+    public static float GetIntensity(Vector3 position)
+    {
+        Vector3 uv = _instance._lightCamera.WorldToViewportPoint(position);
 
-        int texX = Mathf.RoundToInt(uv.x * width);
-        int texY = Mathf.RoundToInt(uv.y * height);
+        int texX = Mathf.RoundToInt(uv.x * _instance._width);
+        int texY = Mathf.RoundToInt(uv.y * _instance._height);
 
-        Color color = _lightTexture2D.GetPixel(texX, texY);
+        Color color = _instance._lightTexture2D.GetPixel(texX, texY);
         return color.grayscale;
+    }
+
+    void OnDisable()
+    {
+        MovementScheduler.OnCompletedMove -= UpdateLightTexture;
     }
 }

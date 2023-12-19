@@ -46,7 +46,7 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         {
             filterMode = FilterMode.Point
         };
-        _lightTex = new RenderTexture(_combinationTex)
+        _lightTex = new RenderTexture(_internalResolution.x * 2, _internalResolution.y * 2, 32, RenderTextureFormat.ARGB32)
         {
             filterMode = FilterMode.Point
         };

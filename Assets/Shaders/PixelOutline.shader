@@ -5,7 +5,7 @@ Shader "PaulMattern/PixelOutline"
         _MainTex ("Sprite Texture", 2D) = "white" {}
         _OutlineColor ("Outline Color", Color) = (1, 1, 1, 1)
         _OutlineColor2 ("Outline Color 2", Color) = (0.75, 0.75, 0.75, 1)
-        [HideInInspector] _DisplayOutline ("Display Outline", Float) = 1
+        [HideInInspector] _DisplayOutline ("Display Outline", Float) = 0
         [HideInInspector] _IncludeDiagonals ("Include Diagonals", Float) = 1
     }
     SubShader
