@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
+using System.Linq;
 public class MovementScheduler : MonoBehaviour
 {
-    public static Action OnBeginMove;
-    public static Action OnUpdateMove;
-    public static Action OnCompletedMove;
+    public static event Action OnBeginMove;
+    public static event Action OnUpdateMove;
+    public static event Action OnCompletedMove;
     public static bool Locked;
     private static MovementScheduler _instance;
     private Dictionary<Transform, Vector3> _unitsToMove;
-    private int _completedMoves;
+    private List<Task> _moves;
 
     void Awake()
     {
@@ -19,6 +21,7 @@ public class MovementScheduler : MonoBehaviour
     void Start()
     {
         _unitsToMove = new Dictionary<Transform, Vector3>();
+        _moves = new List<Task>();
     }
 
     public static void Add(Transform transform, Vector3 direction)
@@ -27,30 +30,28 @@ public class MovementScheduler : MonoBehaviour
             _instance._unitsToMove.Add(transform, direction);
     }
 
-    public static void Launch()
+    public static async Task Launch()
     {
         Locked = true;
         OnBeginMove?.Invoke();
         foreach (KeyValuePair<Transform, Vector3> unit in _instance._unitsToMove)
         {
-            _instance.StartCoroutine(Lerper.MoveTo(unit.Key, unit.Value, _instance.UpdateCompletion));
+            _instance._moves.Add(Lerper.MoveTo(unit.Key, unit.Value));
         }
-    }
-
-    private void UpdateCompletion()
-    {
-        _completedMoves++;
-        if (_completedMoves == _unitsToMove.Count)
+        while (_instance._moves.Where(x => !x.IsCompleted).Any())
         {
-            Reset();
+            OnUpdateMove?.Invoke();
+            await Awaitable.NextFrameAsync();
         }
+        _instance.Reset();
     }
 
     private void Reset()
     {
-        _completedMoves = 0;
         Locked = false;
         _unitsToMove.Clear();
+        _moves.Clear();
+        LightProber.UpdateLightTexture();
         OnCompletedMove?.Invoke();
     }
 };

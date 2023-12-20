@@ -7,7 +7,7 @@ public class Pushable : MonoBehaviour
     public bool TryPush(Vector3 direction)
     {
         Vector3 target = transform.position + direction;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(target, 0.25f);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(target, Consts.OverlapCircleRadius);
         if (colliders.Length == 0)
         {
             MovementScheduler.Add(_parent.transform, direction);
@@ -27,7 +27,7 @@ public class Pushable : MonoBehaviour
 
     public static bool TryGetAt(Vector3 position, out Pushable pushable)
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, 0.25f);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(position, Consts.OverlapCircleRadius);
         if (colliders.Length > 0 && colliders[0].TryGetComponent(out pushable))
             return true;
         pushable = null;

@@ -12,27 +12,25 @@ public class LightProber : MonoBehaviour
     {
         _instance = this;
     }
-    void OnEnable()
-    {
-        MovementScheduler.OnCompletedMove += UpdateLightTexture;
-    }
+
     void Start()
     {
         _lightCamera = GetComponent<Camera>();
         _width = _lightCamera.targetTexture.width;
         _height = _lightCamera.targetTexture.height;
+        UpdateLightTexture();
     }
 
-    private void UpdateLightTexture()
+    public static void UpdateLightTexture()
     {
-        RenderTexture.active = _lightCamera.targetTexture;
-        _lightTexture2D = new Texture2D(
-            _width,
-            _height,
+        RenderTexture.active = _instance._lightCamera.targetTexture;
+        _instance._lightTexture2D = new Texture2D(
+            _instance._width,
+            _instance._height,
             UnityEngine.Experimental.Rendering.DefaultFormat.LDR, 
             UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
-        _lightTexture2D.ReadPixels(new Rect(0, 0, _width, _height), 0, 0);
-        _lightTexture2D.Apply();
+        _instance._lightTexture2D.ReadPixels(new Rect(0, 0, _instance._width, _instance._height), 0, 0);
+        _instance._lightTexture2D.Apply();
         RenderTexture.active = null;
     }
 
@@ -45,10 +43,5 @@ public class LightProber : MonoBehaviour
 
         Color color = _instance._lightTexture2D.GetPixel(texX, texY);
         return color.grayscale;
-    }
-
-    void OnDisable()
-    {
-        MovementScheduler.OnCompletedMove -= UpdateLightTexture;
     }
 }

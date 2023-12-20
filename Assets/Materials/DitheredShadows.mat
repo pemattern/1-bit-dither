@@ -78,10 +78,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Distortion: 1
-    - _DistortionAmplitude: 1
+    - _DistortionAmplitude: 0.55
     - _DistortionSpeed: 1
     - _EnableExternalAlpha: 0
-    - _GradientModifier: 0.2
+    - _GradientModifier: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DarkColor1: {r: 0.5529412, g: 0.4117647, b: 0.47843137, a: 1}
@@ -95,3 +95,4 @@ Material:
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

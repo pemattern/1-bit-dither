@@ -62,6 +62,18 @@ Shader "PaulMattern/DitheredShadows"
                 { 0.984375, 0.484375, 0.953125, 0.453125, 0.828125, 0.328125, 0.859375, 0.359375 }
             };
 
+            static const float SOBEL_X[3][3] = {
+                { 1.0, 0.0, -1.0 },
+                { 2.0, 0.0, -2.0 },
+                { 1.0, 0.0, -1.0 },
+            };
+
+            static const float SOBEL_Y[3][3] = {
+                { 1.0,  2.0,  1.0 },
+                { 0.0,  0.0,  0.0 },
+                { -1.0, -2.0, -1.0 },
+            };
+
             struct VertexInput
             {
                 float4 position : POSITION;
@@ -82,13 +94,32 @@ Shader "PaulMattern/DitheredShadows"
                 return o;
             }
 
+            float GetSobelAt(float2 pixel_position)
+            {
+                float4 sum_x = 0, sum_y = 0;
+                for (int x = -1; x <= 1; x++)
+                {
+                    for (int y = -1; y <= 1; y++)
+                    {
+                        float2 uv = (pixel_position + float2(x, y)) / _WorldTex_TexelSize.zw;
+                        sum_x += SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, uv) * SOBEL_X[x + 1][y + 1];
+                        sum_y += SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, uv) * SOBEL_Y[x + 1][y + 1];
+                    }
+                }
+
+                float result = sqrt(sum_x * sum_x + sum_y * sum_y);
+                return 1 - result;
+            }
+
             float4 Frag(VertexOutput i) : SV_Target
             {
                 float2 pixel_position = floor(i.uv * _WorldTex_TexelSize.zw);
-                float2 distortion = round(float2(sin(pixel_position.x * _Time.y * 0.01 * _DistortionSpeed), sin(pixel_position.y * _Time.y * 0.013 * _DistortionSpeed)) * _DistortionAmplitude);
+                float light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, i.uv), _GradientModifier);
+                float sobel = GetSobelAt(pixel_position);
+                float2 distortion = sobel < 0.2 ? float2(0, 0) : float2(sin(pixel_position.x * _Time.y * 0.01 * _DistortionSpeed), sin(pixel_position.y * _Time.y * 0.013 * _DistortionSpeed)) * _DistortionAmplitude;
                 float2 distorted_uv = (pixel_position + distortion) / _WorldTex_TexelSize.zw;
                 float4 world_color = SAMPLE_TEXTURE2D(_WorldTex, sampler_WorldTex, i.uv);
-                float light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, distorted_uv), _GradientModifier);
+                light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, distorted_uv), _GradientModifier);
                 
                 float dither_shade;
                 if (_DitheringPattern == 0)
@@ -100,7 +131,7 @@ Shader "PaulMattern/DitheredShadows"
 
                 float4 color = (dither_shade < light_color) ?
                     world_color : 
-                    SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2(world_color.b, 0.75));
+                    SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2(dot(world_color.rgb, float3(0.2126, 0.7152, 0.0722)), 0.5));
                 return color;
             }
             ENDHLSL

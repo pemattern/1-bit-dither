@@ -9,21 +9,22 @@ public class PixelOutline : MonoBehaviour
 
     void OnEnable()
     {
-        MovementScheduler.OnCompletedMove += OutlineDisplayCheck;
+        MovementScheduler.OnUpdateMove += OutlineDisplayCheck;
     }
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _outlineMaterial = _spriteRenderer.material;
+        OutlineDisplayCheck();
     }
 
     public void OutlineDisplayCheck()
     {
-        bool displayOutline = Vector3.Distance(_playerTransform.position, transform.position) < 1.1f;
+        bool displayOutline = Vector3.Distance(_playerTransform.position, transform.position) < Consts.DistanceDelta;
         _outlineMaterial.SetFloat("_DisplayOutline", displayOutline ? 1f : 0f);
     }
     void OnDisable()
     {
-        MovementScheduler.OnCompletedMove -= OutlineDisplayCheck;
+        MovementScheduler.OnUpdateMove -= OutlineDisplayCheck;
     }
 }

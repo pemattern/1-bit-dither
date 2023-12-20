@@ -12,7 +12,7 @@ TextureImporter:
       213: -7486092956772349302
     second: tileset_2
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -471,7 +471,7 @@ TextureImporter:
       name: tileset_16
       rect:
         serializedVersion: 2
-        x: 16
+        x: 0
         y: 1536
         width: 16
         height: 16
@@ -492,7 +492,7 @@ TextureImporter:
       name: tileset_17
       rect:
         serializedVersion: 2
-        x: 64
+        x: 16
         y: 1536
         width: 16
         height: 16
@@ -513,7 +513,7 @@ TextureImporter:
       name: tileset_18
       rect:
         serializedVersion: 2
-        x: 80
+        x: 64
         y: 1536
         width: 16
         height: 16
@@ -534,7 +534,7 @@ TextureImporter:
       name: tileset_19
       rect:
         serializedVersion: 2
-        x: 96
+        x: 80
         y: 1536
         width: 16
         height: 16
@@ -555,8 +555,8 @@ TextureImporter:
       name: tileset_20
       rect:
         serializedVersion: 2
-        x: 64
-        y: 1520
+        x: 96
+        y: 1536
         width: 16
         height: 16
       alignment: 0
@@ -576,7 +576,7 @@ TextureImporter:
       name: tileset_21
       rect:
         serializedVersion: 2
-        x: 80
+        x: 64
         y: 1520
         width: 16
         height: 16
@@ -597,7 +597,7 @@ TextureImporter:
       name: tileset_22
       rect:
         serializedVersion: 2
-        x: 96
+        x: 80
         y: 1520
         width: 16
         height: 16
@@ -610,6 +610,27 @@ TextureImporter:
       bones: []
       spriteID: 4383b32ad54fcc69e8464c673673766e
       internalID: -254706612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tileset_23
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 1520
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9701b2ae4f816926da9f137b9c975d14
+      internalID: 1575783097
       vertices: []
       indices: 
       edges: []
@@ -641,6 +662,7 @@ TextureImporter:
       tileset_20: 749023528
       tileset_21: -83491771
       tileset_22: -254706612
+      tileset_23: 1575783097
       tileset_3: 891396114
       tileset_4: -475459716
       tileset_5: -1620768578

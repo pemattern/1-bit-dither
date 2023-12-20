@@ -6,14 +6,14 @@ using UnityEngine.UI;
 [RequireComponent(typeof(RawImage))]
 public class DispatchPostProcessingShaders : MonoBehaviour
 {
-    const int SHADES_COUNT = 4;
     [SerializeField] Vector2Int _internalResolution;
+    [SerializeField] int _lightTextureResolutionFactor;
     [SerializeField] int _pixelsPerUnit;
     [SerializeField] Material _mat;
     [SerializeField] Camera _worldCamera, _lightCamera;
     [SerializeField] DitheringPattern _ditheringPattern;
     [SerializeField] float _distortionSpeed, _distortionAmplitude, _gradientModifier;
-    [SerializeField] Color[] _lightColors, _darkColors;
+    [SerializeField] Color[] _shadowColors;
     RawImage _rawImage;
     RenderTexture _worldTex, _lightTex, _combinationTex;
     Texture2D _colorPaletteTex;
@@ -35,9 +35,6 @@ public class DispatchPostProcessingShaders : MonoBehaviour
 
     void Setup()
     {
-        if (_lightColors.Length != SHADES_COUNT || _darkColors.Length != SHADES_COUNT)
-            throw new System.Exception("There must be exactly 4 light/dark colors.");
-
         _combinationTex = new RenderTexture(_internalResolution.x, _internalResolution.y, 32, RenderTextureFormat.ARGB32)
         {
             filterMode = FilterMode.Point
@@ -46,7 +43,7 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         {
             filterMode = FilterMode.Point
         };
-        _lightTex = new RenderTexture(_internalResolution.x * 2, _internalResolution.y * 2, 32, RenderTextureFormat.ARGB32)
+        _lightTex = new RenderTexture(_internalResolution.x * _lightTextureResolutionFactor, _internalResolution.y * _lightTextureResolutionFactor, 32, RenderTextureFormat.ARGB32)
         {
             filterMode = FilterMode.Point
         };
@@ -73,18 +70,14 @@ public class DispatchPostProcessingShaders : MonoBehaviour
 
     Texture2D GenerateColorPaletteTex()
     {
-        Texture2D tex = new Texture2D(SHADES_COUNT, 2)
+        Texture2D tex = new Texture2D(_shadowColors.Length, 1)
         {
             filterMode = FilterMode.Point,
             wrapMode = TextureWrapMode.Clamp
         };
-        for (int x = 0; x < SHADES_COUNT; x++)
+        for (int x = 0; x < _shadowColors.Length; x++)
         {
-            for (int y = 0; y < 2; y++)
-            {
-                Color color = (y == 0) ? _lightColors[x] : _darkColors[x];
-                tex.SetPixel(x, y, color);
-            }
+            tex.SetPixel(x, 0, _shadowColors[x]);
         }
         tex.Apply();
         return tex;

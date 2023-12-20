@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
         Vector3 target = transform.position + input;
         if (input.magnitude > 0f && !MovementScheduler.Locked)
         {
-            if (Physics2D.OverlapCircle(target, 0.25f, LayerMask.GetMask("Default")) || 
+            if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default")) || 
                 (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input))) return;
 
             MovementScheduler.Add(transform, input);
