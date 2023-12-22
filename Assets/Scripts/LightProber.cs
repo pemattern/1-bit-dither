@@ -1,47 +1,49 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
-[RequireComponent(typeof(Camera))]
 public class LightProber : MonoBehaviour
 {
-    private static LightProber _instance;
-    private Camera _lightCamera;
-    private Texture2D _lightTexture2D;
-    private int _width, _height;
-    void Awake()
+    public static Light2D[] GetAllLights()
     {
-        _instance = this;
+        return FindObjectsByType<Light2D>(FindObjectsSortMode.None);
     }
 
-    void Start()
+    public static Light2D[] GetContributingLights(Vector3 position)
     {
-        _lightCamera = GetComponent<Camera>();
-        _width = _lightCamera.targetTexture.width;
-        _height = _lightCamera.targetTexture.height;
-        UpdateLightTexture();
-    }
-
-    public static void UpdateLightTexture()
-    {
-        RenderTexture.active = _instance._lightCamera.targetTexture;
-        _instance._lightTexture2D = new Texture2D(
-            _instance._width,
-            _instance._height,
-            UnityEngine.Experimental.Rendering.DefaultFormat.LDR, 
-            UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
-        _instance._lightTexture2D.ReadPixels(new Rect(0, 0, _instance._width, _instance._height), 0, 0);
-        _instance._lightTexture2D.Apply();
-        RenderTexture.active = null;
+        List<Light2D> result = new List<Light2D>();
+        foreach(Light2D light in GetAllLights())
+        {
+            if (Vector3.Distance(position, light.transform.position) <= light.pointLightOuterRadius)
+            {
+                result.Add(light);
+            }
+        }
+        return result.ToArray();
     }
 
     public static float GetIntensity(Vector3 position)
     {
-        Vector3 uv = _instance._lightCamera.WorldToViewportPoint(position);
+        float intensity = 0f;
+        foreach(Light2D light in GetContributingLights(position))
+        {
+            intensity += IntensityAt(light, position);
+        }
+        Debug.Log(intensity);
+        return intensity;
+    }
 
-        int texX = Mathf.RoundToInt(uv.x * _instance._width);
-        int texY = Mathf.RoundToInt(uv.y * _instance._height);
-
-        Color color = _instance._lightTexture2D.GetPixel(texX, texY);
-        return color.grayscale;
+    public static float IntensityAt(Light2D light, Vector3 position)
+    {
+        float distance = Vector3.Distance(position, light.transform.position);
+        if (distance > light.pointLightInnerRadius)
+        {
+            float ratio = Ease.ProgressNormalized(light.pointLightInnerRadius, light.pointLightOuterRadius, distance);
+            return light.intensity * ratio;
+        }
+        else
+        {
+            return light.intensity;
+        }
     }
 }

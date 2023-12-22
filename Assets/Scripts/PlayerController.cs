@@ -8,6 +8,13 @@ public class PlayerController : MonoBehaviour
     private Vector3 _inputBuffer;
     void Update()
     {
+        if (_move != null && !_move.IsCompleted && _inputDelay != null && _inputDelay.IsCompleted)
+        {
+            Vector3 temp = new Vector3(Mathf.Round(Input.GetAxisRaw("Horizontal")), Mathf.Round(Input.GetAxisRaw("Vertical")), 0f);
+            if (temp.x != 0f && temp.y != 0f)
+                _inputBuffer = new Vector3(temp.x, 0f, 0f);
+        }
+
         Vector3 input;
         if (_inputBuffer.magnitude > 0f)
         {
@@ -17,16 +24,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             input = new Vector3(Mathf.Round(Input.GetAxisRaw("Horizontal")), Mathf.Round(Input.GetAxisRaw("Vertical")), 0f);
-        }
-
-        if (input.x > 0f && input.y > 0f)
-        {
-            input = new Vector3(input.x, 0f, 0f);
-        }
-
-        if (_move != null && !_move.IsCompleted && _inputDelay != null && _inputDelay.IsCompleted)
-        {
-            _inputBuffer = input;
+            if (input.x != 0f && input.y != 0f)
+                input = new Vector3(input.x, 0f, 0f);
         }
 
         if (input.magnitude > 0f && !MovementScheduler.Locked)
@@ -39,7 +38,5 @@ public class PlayerController : MonoBehaviour
             _move = MovementScheduler.Launch();
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
         }
-
-
     }
 }

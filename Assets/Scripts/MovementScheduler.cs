@@ -51,7 +51,6 @@ public class MovementScheduler : MonoBehaviour
         Locked = false;
         _unitsToMove.Clear();
         _moves.Clear();
-        LightProber.UpdateLightTexture();
         OnCompletedMove?.Invoke();
     }
 };
