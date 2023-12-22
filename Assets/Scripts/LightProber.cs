@@ -22,14 +22,13 @@ public class LightProber : MonoBehaviour
         return result.ToArray();
     }
 
-    public static float GetIntensity(Vector3 position)
+    public static float TotalIntensityAt(Vector3 position)
     {
         float intensity = 0f;
         foreach(Light2D light in GetContributingLights(position))
         {
             intensity += IntensityAt(light, position);
         }
-        Debug.Log(intensity);
         return intensity;
     }
 

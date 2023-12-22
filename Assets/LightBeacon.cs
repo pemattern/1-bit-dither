@@ -10,10 +10,10 @@ public class LightBeacon : MonoBehaviour
     }
     void UpdateIntensity()
     {
-        _lightIntensity = LightProber.GetIntensity(transform.position);
+        _lightIntensity = LightProber.TotalIntensityAt(transform.position);
         if (_lightIntensity > Consts.LightActivationIntensity)
         {
-            Debug.Log("YOU WIN! " + _lightIntensity);
+            //
         }
     }
 

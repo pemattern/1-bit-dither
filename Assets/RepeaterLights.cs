@@ -10,28 +10,31 @@ public class RepeaterLights : MonoBehaviour
     {
         MovementScheduler.OnUpdateMove += UpdateLights;
     }
+
+    void RegisterLight(Light2D light)
+    {
+        if (_lights.ContainsKey(light)) return;
+
+        GameObject gameObject = new GameObject(light.name + " repeater");
+        gameObject.layer = LayerMask.NameToLayer("Light");
+        gameObject.transform.parent = transform;
+        gameObject.transform.localPosition = Vector3.zero;
+        Light2D repeaterLight = gameObject.AddComponent<Light2D>();
+        repeaterLight.intensity = light.intensity;
+        repeaterLight.pointLightInnerRadius = light.pointLightInnerRadius;
+        repeaterLight.pointLightOuterRadius = light.pointLightOuterRadius;
+        repeaterLight.pointLightInnerAngle = 50f;
+        repeaterLight.pointLightOuterAngle = 50f;
+        repeaterLight.blendStyleIndex = 1;
+        repeaterLight.shadowsEnabled = true;
+        repeaterLight.shadowIntensity = 1f;
+        repeaterLight.falloffIntensity = 0.5f;
+        repeaterLight.enabled = false;
+        _lights.Add(light, repeaterLight);
+    }
     void Start()
     {
         _lights = new Dictionary<Light2D, Light2D>();
-        Light2D[] lights = LightProber.GetAllLights();
-        foreach (Light2D light in lights)
-        {
-            GameObject gameObject = new GameObject(light.name + " repeater")
-            {
-                layer = 7
-            };
-            gameObject.transform.parent = transform;
-            gameObject.transform.localPosition = Vector3.zero;
-            Light2D repeaterLight = gameObject.AddComponent<Light2D>();
-            repeaterLight.intensity = light.intensity;
-            repeaterLight.pointLightInnerRadius = light.pointLightInnerRadius;
-            repeaterLight.pointLightOuterRadius = light.pointLightOuterRadius;
-            repeaterLight.pointLightInnerAngle = 50f;
-            repeaterLight.pointLightOuterAngle = 50f;
-            repeaterLight.blendStyleIndex = 1;
-            _lights.Add(light, repeaterLight);
-        }
-        UpdateLights();
     }
 
     void UpdateLights()
@@ -43,9 +46,12 @@ public class RepeaterLights : MonoBehaviour
 
         foreach(Light2D light in LightProber.GetContributingLights(transform.position))
         {
+            if (_lights.Values.Contains(light) || light.lightType != Light2D.LightType.Point)
+                continue;
+            
             if (!_lights.ContainsKey(light))
-                break;
-                
+                RegisterLight(light);
+
             Vector3 direction = transform.position - light.transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
