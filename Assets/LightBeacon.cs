@@ -6,7 +6,7 @@ public class LightBeacon : MonoBehaviour
     private float _lightIntensity;
     void OnEnable()
     {
-        MovementScheduler.OnCompletedMove += UpdateIntensity;
+        CommandScheduler.OnCompletedCommand += UpdateIntensity;
     }
     void UpdateIntensity()
     {
@@ -19,6 +19,6 @@ public class LightBeacon : MonoBehaviour
 
     void OnDisable()
     {
-        MovementScheduler.OnCompletedMove -= UpdateIntensity;
+        CommandScheduler.OnCompletedCommand -= UpdateIntensity;
     }
 }

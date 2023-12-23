@@ -8,7 +8,7 @@ public class RepeaterLights : MonoBehaviour
     private Dictionary<Light2D, Light2D> _lights;
     void OnEnable()
     {
-        MovementScheduler.OnUpdateMove += UpdateLights;
+        CommandScheduler.OnUpdateCommand += UpdateLights;
     }
 
     void RegisterLight(Light2D light)
@@ -64,6 +64,6 @@ public class RepeaterLights : MonoBehaviour
 
     void OnDisable()
     {
-        MovementScheduler.OnUpdateMove -= UpdateLights;
+        CommandScheduler.OnUpdateCommand -= UpdateLights;
     }
 }

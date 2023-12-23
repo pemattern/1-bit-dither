@@ -10,14 +10,14 @@ public class Pushable : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(target, Consts.OverlapCircleRadius);
         if (colliders.Length == 0)
         {
-            MovementScheduler.Add(_parent.transform, direction);
+            CommandScheduler.Add(new Move(_parent.transform, direction));
             return true;
         }
         if (colliders[0].TryGetComponent(out Pushable other))
         {
             if (other.TryPush(direction))
             {
-                MovementScheduler.Add(_parent.transform, direction);
+                CommandScheduler.Add(new Move(_parent.transform, direction));
                 return true;
             }
             return false;

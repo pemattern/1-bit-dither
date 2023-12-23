@@ -9,7 +9,7 @@ public class PixelOutline : MonoBehaviour
 
     void OnEnable()
     {
-        MovementScheduler.OnUpdateMove += OutlineDisplayCheck;
+        CommandScheduler.OnUpdateCommand += OutlineDisplayCheck;
     }
     void Start()
     {
@@ -25,6 +25,6 @@ public class PixelOutline : MonoBehaviour
     }
     void OnDisable()
     {
-        MovementScheduler.OnUpdateMove -= OutlineDisplayCheck;
+        CommandScheduler.OnUpdateCommand -= OutlineDisplayCheck;
     }
 }

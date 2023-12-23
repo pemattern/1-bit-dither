@@ -3,12 +3,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Task _move;
     private Awaitable _inputDelay;
     private Vector3 _inputBuffer;
     void Update()
     {
-        if (_move != null && !_move.IsCompleted && _inputDelay != null && _inputDelay.IsCompleted)
+        if (Input.GetKeyDown(KeyCode.Backspace) && !CommandScheduler.Locked)
+        {
+            CommandScheduler.Undo();
+            _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
+        }
+
+        if (CommandScheduler.Locked && _inputDelay != null && _inputDelay.IsCompleted)
         {
             Vector3 temp = new Vector3(Mathf.Round(Input.GetAxisRaw("Horizontal")), Mathf.Round(Input.GetAxisRaw("Vertical")), 0f);
             if (temp.x != 0f && temp.y != 0f)
@@ -28,14 +33,14 @@ public class PlayerController : MonoBehaviour
                 input = new Vector3(input.x, 0f, 0f);
         }
 
-        if (input.magnitude > 0f && !MovementScheduler.Locked)
+        if (input.magnitude > 0f && !CommandScheduler.Locked)
         {
             Vector3 target = transform.position + input;
             if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default")) || 
                 (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input))) return;
 
-            MovementScheduler.Add(transform, input);
-            _move = MovementScheduler.Launch();
+            CommandScheduler.Add(new Move(transform, input));
+            CommandScheduler.Execute();
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
         }
     }
