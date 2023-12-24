@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(PixelOutline))]
-public class InteractableLight : MonoBehaviour
+public class InteractableLight : MonoBehaviour, IInteractable
 {
     [SerializeField] Transform _playerTransform;
     [SerializeField] Sprite _onSprite, _offSprite;
@@ -18,8 +18,14 @@ public class InteractableLight : MonoBehaviour
     {
         if (Vector3.Distance(transform.position, _playerTransform.position) < Consts.DistanceDelta && Input.GetKeyUp(KeyCode.E))
         {
-            _light.enabled = !_light.enabled;
-            _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;
+            CommandScheduler.Add(new Interact(this));
+            CommandScheduler.Execute();
         }
+    }
+
+    public void Interact()
+    {
+        _light.enabled = !_light.enabled;
+        _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;        
     }
 }
