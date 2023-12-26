@@ -14,12 +14,12 @@ public class InteractableLight : MonoBehaviour, IInteractable
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;
     }
-    void Update()
+    async void Update()
     {
         if (Vector3.Distance(transform.position, _playerTransform.position) < Consts.DistanceDelta && Input.GetKeyUp(KeyCode.E))
         {
             CommandScheduler.Add(new Interaction(this));
-            CommandScheduler.Execute();
+            await CommandScheduler.Execute();
         }
     }
 
