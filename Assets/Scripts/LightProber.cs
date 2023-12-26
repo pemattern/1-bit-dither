@@ -14,7 +14,7 @@ public class LightProber : MonoBehaviour
         List<Light2D> result = new List<Light2D>();
         foreach(Light2D light in GetAllLights())
         {
-            if (Vector3.Distance(position, light.transform.position) <= light.pointLightOuterRadius)
+            if (light.enabled && light.lightType == Light2D.LightType.Point && Vector3.Distance(position, light.transform.position) <= light.pointLightOuterRadius)
             {
                 result.Add(light);
             }
@@ -27,6 +27,7 @@ public class LightProber : MonoBehaviour
         float intensity = 0f;
         foreach(Light2D light in GetContributingLights(position))
         {
+            Debug.Log(light.name);
             intensity += IntensityAt(light, position);
         }
         return intensity;

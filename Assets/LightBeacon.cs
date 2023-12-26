@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class LightBeacon : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class LightBeacon : MonoBehaviour
         _lightIntensity = LightProber.TotalIntensityAt(transform.position);
         if (_lightIntensity > Consts.LightActivationIntensity)
         {
-            //
+            Debug.Log("YOU WIN! " + _lightIntensity);
         }
     }
 
