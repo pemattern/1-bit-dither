@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Move : ICommand
+public class Movement : ICommand
 {
     private Transform _transform;
     private Vector3 _direction;
-    public Move (Transform transform, Vector3 direction)
+    public Movement (Transform transform, Vector3 direction)
     {
         _transform = transform;
         _direction = direction;

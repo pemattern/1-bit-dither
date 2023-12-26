@@ -5,12 +5,12 @@ public class PlayerController : MonoBehaviour
 {
     private Awaitable _inputDelay;
     private Vector3 _inputBuffer;
-    void Update()
+    async void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Backspace) && !CommandScheduler.Locked)
+        if (Input.GetKey(KeyCode.Backspace) && !CommandScheduler.Locked)
         {
-            CommandScheduler.Undo();
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
+            await CommandScheduler.Undo();
         }
 
         if (CommandScheduler.Locked && _inputDelay != null && _inputDelay.IsCompleted)
@@ -39,9 +39,9 @@ public class PlayerController : MonoBehaviour
             if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default")) || 
                 (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input))) return;
 
-            CommandScheduler.Add(new Move(transform, input));
-            CommandScheduler.Execute();
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
+            CommandScheduler.Add(new Movement(transform, input));
+            await CommandScheduler.Execute();
         }
     }
 }

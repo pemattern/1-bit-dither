@@ -18,7 +18,7 @@ public class InteractableLight : MonoBehaviour, IInteractable
     {
         if (Vector3.Distance(transform.position, _playerTransform.position) < Consts.DistanceDelta && Input.GetKeyUp(KeyCode.E))
         {
-            CommandScheduler.Add(new Interact(this));
+            CommandScheduler.Add(new Interaction(this));
             CommandScheduler.Execute();
         }
     }
