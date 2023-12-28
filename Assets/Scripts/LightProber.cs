@@ -14,7 +14,9 @@ public class LightProber : MonoBehaviour
         List<Light2D> result = new List<Light2D>();
         foreach(Light2D light in GetAllLights())
         {
-            if (light.enabled && light.lightType == Light2D.LightType.Point && Vector3.Distance(position, light.transform.position) <= light.pointLightOuterRadius)
+            Vector3 direction = light.transform.position - position;
+            RaycastHit2D hit = Physics2D.Raycast(position, direction.normalized, direction.magnitude, LayerMask.GetMask("Default"));
+            if (hit.collider == null && light.enabled && light.lightType == Light2D.LightType.Point && Vector3.Distance(position, light.transform.position) <= light.pointLightOuterRadius)
             {
                 result.Add(light);
             }
@@ -27,7 +29,6 @@ public class LightProber : MonoBehaviour
         float intensity = 0f;
         foreach(Light2D light in GetContributingLights(position))
         {
-            Debug.Log(light.name);
             intensity += IntensityAt(light, position);
         }
         return intensity;
@@ -38,7 +39,8 @@ public class LightProber : MonoBehaviour
         float distance = Vector3.Distance(position, light.transform.position);
         if (distance > light.pointLightInnerRadius)
         {
-            float ratio = Ease.ProgressNormalized(light.pointLightInnerRadius, light.pointLightOuterRadius, distance);
+            float progress = Ease.ProgressNormalized(light.pointLightInnerRadius, light.pointLightOuterRadius, distance);
+            float ratio = progress * progress;
             return light.intensity * ratio;
         }
         else

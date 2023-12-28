@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         if (input.magnitude > 0f && !CommandScheduler.Locked)
         {
             Vector3 target = transform.position + input;
-            if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default")) || 
+            if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default", "Lightpassthrough")) || 
                 (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input))) return;
 
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);

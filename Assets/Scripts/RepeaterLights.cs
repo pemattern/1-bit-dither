@@ -45,10 +45,7 @@ public class RepeaterLights : MonoBehaviour
         }
 
         foreach(Light2D light in LightProber.GetContributingLights(transform.position))
-        {
-            if (_lights.Values.Contains(light) || light.lightType != Light2D.LightType.Point)
-                continue;
-            
+        {           
             if (!_lights.ContainsKey(light))
                 RegisterLight(light);
 
