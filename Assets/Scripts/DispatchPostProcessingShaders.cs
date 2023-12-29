@@ -10,12 +10,12 @@ public class DispatchPostProcessingShaders : MonoBehaviour
     [SerializeField] int _lightTextureResolutionFactor;
     [SerializeField] int _pixelsPerUnit;
     [SerializeField] Material _mat;
-    [SerializeField] Camera _worldCamera, _lightCamera;
+    [SerializeField] Camera _worldCamera, _lightCamera, _overlayCamera;
     [SerializeField] DitheringPattern _ditheringPattern;
     [SerializeField] float _distortionSpeed, _distortionAmplitude, _gradientModifier;
     [SerializeField] Color[] _shadowColors;
     RawImage _rawImage;
-    RenderTexture _worldTex, _lightTex, _combinationTex;
+    RenderTexture _worldTex, _lightTex, _overlayTex, _combinationTex;
     Texture2D _colorPaletteTex;
     
     void OnEnable()
@@ -43,6 +43,10 @@ public class DispatchPostProcessingShaders : MonoBehaviour
         {
             filterMode = FilterMode.Point
         };
+        _overlayTex = new RenderTexture(_combinationTex)
+        {
+            filterMode = FilterMode.Point
+        };
         _lightTex = new RenderTexture(_internalResolution.x * _lightTextureResolutionFactor, _internalResolution.y * _lightTextureResolutionFactor, 32, RenderTextureFormat.ARGB32)
         {
             filterMode = FilterMode.Point
@@ -52,14 +56,17 @@ public class DispatchPostProcessingShaders : MonoBehaviour
 
         _worldCamera.targetTexture = _worldTex;
         _lightCamera.targetTexture = _lightTex;
+        _overlayCamera.targetTexture = _overlayTex;
         _rawImage.texture = _combinationTex;
 
         float orthographicSize = _internalResolution.y / (float)_pixelsPerUnit / 2f;
         _worldCamera.orthographicSize = orthographicSize;
         _lightCamera.orthographicSize = orthographicSize;
+        _overlayCamera.orthographicSize = orthographicSize;
 
         _mat.SetTexture("_WorldTex", _worldTex);
         _mat.SetTexture("_LightTex", _lightTex);
+        _mat.SetTexture("_OverlayTex", _overlayTex);
         _mat.SetTexture("_ColorPaletteTex", _colorPaletteTex);
 
         _mat.SetFloat("_DistortionSpeed", _distortionSpeed);

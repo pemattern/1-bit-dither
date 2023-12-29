@@ -3,28 +3,50 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PixelOutline : MonoBehaviour
 {
+    public bool Active => Vector3.Distance(_playerTransform.position, transform.position) < Consts.DistanceDelta;
     [SerializeField] Transform _playerTransform;
+    [SerializeField] PixelOutline[] _linkedOutlines;
     SpriteRenderer _spriteRenderer;
     Material _outlineMaterial;
-
     void OnEnable()
     {
-        CommandScheduler.OnUpdateCommand += OutlineDisplayCheck;
+        CommandScheduler.OnCompletedCommand += OutlineDisplayCheck;
     }
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _outlineMaterial = _spriteRenderer.material;
-        OutlineDisplayCheck();
+        UpdateOutline(Active);
+    }
+
+    public void UpdateOutline(bool displayOutline)
+    {
+        _outlineMaterial.SetFloat("_DisplayOutline", displayOutline ? 1f : 0f);
     }
 
     public void OutlineDisplayCheck()
     {
-        bool displayOutline = Vector3.Distance(_playerTransform.position, transform.position) < Consts.DistanceDelta;
-        _outlineMaterial.SetFloat("_DisplayOutline", displayOutline ? 1f : 0f);
+        bool displayOutline = Active;
+        if (!displayOutline)
+        {
+            foreach(PixelOutline outline in _linkedOutlines)
+            {
+                if (outline.Active)
+                {
+                    displayOutline = true;
+                    break;
+                }
+            }
+        }
+        UpdateOutline(displayOutline);
+        foreach(PixelOutline outline in _linkedOutlines)
+        {
+            outline.UpdateOutline(displayOutline);
+        }
+
     }
     void OnDisable()
     {
-        CommandScheduler.OnUpdateCommand -= OutlineDisplayCheck;
+        CommandScheduler.OnCompletedCommand -= OutlineDisplayCheck;
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-[RequireComponent(typeof(SpriteRenderer), typeof(PixelOutline))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class InteractableLight : MonoBehaviour, IInteractable
 {
     [SerializeField] Transform _playerTransform;

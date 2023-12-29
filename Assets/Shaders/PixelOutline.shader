@@ -62,16 +62,16 @@ Shader "PaulMattern/PixelOutline"
                 float4 outline = float4(0, 0, 0, 0);
                 if (_DisplayOutline == 1.0)
                 {
-                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x + _MainTex_TexelSize.x, i.uv.y));
-                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x - _MainTex_TexelSize.x, i.uv.y));
-                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y + _MainTex_TexelSize.y));
-                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, float2(i.uv.x, i.uv.y - _MainTex_TexelSize.y));
+                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(float2(i.uv.x + _MainTex_TexelSize.x, i.uv.y)));
+                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(float2(i.uv.x - _MainTex_TexelSize.x, i.uv.y)));
+                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(float2(i.uv.x, i.uv.y + _MainTex_TexelSize.y)));
+                    outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(float2(i.uv.x, i.uv.y - _MainTex_TexelSize.y)));
                     if (_IncludeDiagonals == 1.0)
                     {
-                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv + _MainTex_TexelSize.xy);
-                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv - _MainTex_TexelSize.xy);
-                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv + float2(_MainTex_TexelSize.x, -_MainTex_TexelSize.y));
-                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv + float2(-_MainTex_TexelSize.x, _MainTex_TexelSize.y));
+                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(i.uv + _MainTex_TexelSize.xy));
+                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(i.uv - _MainTex_TexelSize.xy));
+                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(i.uv + float2(_MainTex_TexelSize.x, -_MainTex_TexelSize.y)));
+                        outline += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, saturate(i.uv + float2(-_MainTex_TexelSize.x, _MainTex_TexelSize.y)));
                     }
                     outline = step(0.001, outline);
                     outline *= _OutlineColor;
@@ -81,7 +81,7 @@ Shader "PaulMattern/PixelOutline"
                     outline *= checker_board == ticker ? _OutlineColor : _OutlineColor2;
                 }
 
-                float4 color = (base_color.a > 0) ? base_color : outline;
+                float4 color = (base_color.a > 0) ? float4(0, 0, 0, 0) : outline;
                 return color;
             }
             ENDHLSL

@@ -5,6 +5,7 @@ Shader "PaulMattern/DitheredShadows"
         _WorldTex ("World Texture", 2D) = "white" {}
         _LightTex ("Light Texture", 2D) = "white" {}
         _ColorPaletteTex ("Color Palette Texture", 2D) = "white" {}
+        _OverlayTex ("Overlay Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -30,6 +31,9 @@ Shader "PaulMattern/DitheredShadows"
 
             TEXTURE2D(_ColorPaletteTex);
             SAMPLER(sampler_ColorPaletteTex);
+
+            TEXTURE2D(_OverlayTex);
+            SAMPLER(sampler_OverlayTex);
 
             int _DitheringPattern;
 
@@ -113,6 +117,10 @@ Shader "PaulMattern/DitheredShadows"
 
             float4 Frag(VertexOutput i) : SV_Target
             {
+                float4 overlay_color = SAMPLE_TEXTURE2D(_OverlayTex, sampler_OverlayTex, i.uv);
+                if (overlay_color.a > 0)
+                    return overlay_color;
+
                 float2 pixel_position = floor(i.uv * _WorldTex_TexelSize.zw);
                 float light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, i.uv), _GradientModifier);
                 float sobel = GetSobelAt(pixel_position);
