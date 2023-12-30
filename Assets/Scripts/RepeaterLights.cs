@@ -20,11 +20,11 @@ public class RepeaterLights : MonoBehaviour
         gameObject.transform.parent = transform;
         gameObject.transform.localPosition = Vector3.zero;
         Light2D repeaterLight = gameObject.AddComponent<Light2D>();
-        repeaterLight.intensity = light.intensity;
-        repeaterLight.pointLightInnerRadius = light.pointLightInnerRadius;
-        repeaterLight.pointLightOuterRadius = light.pointLightOuterRadius;
-        repeaterLight.pointLightInnerAngle = 50f;
-        repeaterLight.pointLightOuterAngle = 50f;
+        repeaterLight.intensity = 1;
+        repeaterLight.pointLightInnerRadius = 5;
+        repeaterLight.pointLightOuterRadius = 6;
+        repeaterLight.pointLightInnerAngle = 25f;
+        repeaterLight.pointLightOuterAngle = 25f;
         repeaterLight.blendStyleIndex = 1;
         repeaterLight.shadowsEnabled = true;
         repeaterLight.shadowIntensity = 1f;
@@ -49,7 +49,7 @@ public class RepeaterLights : MonoBehaviour
             if (!_lights.ContainsKey(light))
                 RegisterLight(light);
 
-            Vector3 direction = transform.position - light.transform.position;
+            Vector3 direction = Vector3.down;//transform.position - light.transform.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
             Light2D repeaterLight = _lights[light];
