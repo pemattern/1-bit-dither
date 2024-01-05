@@ -1,10 +1,16 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CircleCollider2D))]
 public class LightBeacon : MonoBehaviour, IActivator
 {
+    private Collider2D _collider;
+
+    void Start()
+    {
+        _collider = gameObject.GetComponent<CircleCollider2D>();
+    }
     public bool IsActivated()
     {
-        Debug.Log(LightProber.TotalIntensityAt(transform.position));
-        return LightProber.TotalIntensityAt(transform.position) > Consts.LightActivationIntensity;
+        return LightProber.TotalIntensityAt(_collider) > Consts.LightActivationIntensity;
     }
 }

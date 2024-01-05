@@ -121,7 +121,7 @@ Shader "PaulMattern/DitheredShadows"
                 if (overlay_color.a > 0)
                     return overlay_color;
 
-                float2 pixel_position = floor(i.uv * _WorldTex_TexelSize.zw);
+                float2 pixel_position = round((i.uv + 0.5 * _WorldTex_TexelSize.xy) * _WorldTex_TexelSize.zw);
                 float light_color = pow(SAMPLE_TEXTURE2D(_LightTex, sampler_LightTex, i.uv), _GradientModifier);
                 float sobel = GetSobelAt(pixel_position);
                 float2 distortion = sobel < 0.2 ? float2(0, 0) : float2(sin(pixel_position.x * _Time.y * 0.01 * _DistortionSpeed), sin(pixel_position.y * _Time.y * 0.013 * _DistortionSpeed)) * _DistortionAmplitude;
@@ -139,7 +139,7 @@ Shader "PaulMattern/DitheredShadows"
 
                 float4 color = (dither_shade < light_color) ?
                     world_color : 
-                    SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2(dot(world_color.rgb, float3(0.2126, 0.7152, 0.0722)), 0.5));
+                    SAMPLE_TEXTURE2D(_ColorPaletteTex, sampler_ColorPaletteTex, float2((world_color.r + world_color.g + world_color.b + 1.2) / 3, 0.5));
                 return color;
             }
             ENDHLSL

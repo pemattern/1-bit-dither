@@ -28,4 +28,9 @@ public class InteractableLight : MonoBehaviour, IInteractable
         _light.enabled = !_light.enabled;
         _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;        
     }
+
+    public void UndoInteract()
+    {
+        Interact();
+    }
 }

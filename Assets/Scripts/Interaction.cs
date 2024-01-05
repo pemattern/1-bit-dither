@@ -16,7 +16,7 @@ public class Interaction : ICommand
     }
     public async Task Undo()
     {
-        _interactable.Interact();
+        _interactable.UndoInteract();
         await Awaitable.WaitForSecondsAsync(0.1f);
     }
 }
