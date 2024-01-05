@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
-public class LightFunnel : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Light2D))]
+public class LightChanneler : MonoBehaviour, IInteractable
 {
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private Direction.FourWay _startingDirection;
     private Direction.FourWay _currentDirection;
-    private Light2D _light;
+    private Light2D _channelerLight, _cosmeticLight;
     private Collider2D _collider;
 
     void OnEnable()
@@ -18,28 +19,21 @@ public class LightFunnel : MonoBehaviour, IInteractable
     void Start()
     {
         _currentDirection = _startingDirection;
-
-        _light = gameObject.AddComponent<Light2D>();
-        _light.pointLightInnerRadius = 5;
-        _light.pointLightOuterRadius = 6;
-        _light.pointLightInnerAngle = 10f;
-        _light.pointLightOuterAngle = 10f;
-        _light.blendStyleIndex = 1;
-        _light.shadowsEnabled = true;
-        _light.shadowIntensity = 1f;
-        _light.falloffIntensity = 0.5f;
-
-        _collider = gameObject.transform.parent.gameObject.AddComponent<CircleCollider2D>();
-
+        _channelerLight = GetComponent<Light2D>();
+        _cosmeticLight = GetComponentInChildren<Light2D>();
+        _collider = GetComponentInParent<CircleCollider2D>();
         UpdateLight();
     }
 
     void UpdateLight()
     {
-        float intensity = LightProber.TotalIntensityAt(_collider, _light);
-        _light.enabled = intensity > 0f;
-        _light.transform.rotation = GetRotation();
-        _light.intensity = Mathf.Clamp01(intensity);
+        float intensity = LightProber.TotalIntensityAt(_collider, _channelerLight, _cosmeticLight);
+        bool enabled = intensity > 0f;
+        _channelerLight.enabled = enabled;
+        _cosmeticLight.enabled = enabled;
+        _channelerLight.transform.rotation = GetRotation();
+        _channelerLight.intensity = Mathf.Clamp01(intensity);
+        _cosmeticLight.intensity = Mathf.Clamp01(intensity);
     }
 
     public Vector3 GetDirection()

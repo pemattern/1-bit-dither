@@ -18,19 +18,17 @@ public class LightProber : MonoBehaviour
         foreach(Light2D light in GetPointLights())
         {
             Vector3 direction;
-            RaycastHit2D hit;
-            if (light.TryGetComponent(out LightFunnel lightFunnel))
+            if (light.TryGetComponent(out LightChanneler lightChanneler))
             {
-                direction = lightFunnel.GetDirection();
+                direction = lightChanneler.GetDirection();
             }
             else
             {
                 direction = collider.transform.position - light.transform.position;
             }
-            hit = Physics2D.Raycast(light.transform.position, direction.normalized, light.pointLightOuterRadius, LayerMask.GetMask("Default"));
+            RaycastHit2D hit = Physics2D.Raycast(light.transform.position, direction.normalized, light.pointLightOuterRadius, LayerMask.GetMask("Default"));
             if (hit.collider == collider)
             {
-                Debug.Log(light.name + " hit colliders gameOject: " + collider.name);
                 result.Add(light);
             }
         }
@@ -40,13 +38,11 @@ public class LightProber : MonoBehaviour
     public static float TotalIntensityAt(Collider2D collider, params Light2D[] lightsToExclude)
     {
         float intensity = 0f;
-
         foreach(Light2D light in GetContributingLights(collider))
         {
             if (lightsToExclude.Contains(light)) continue;
             intensity += IntensityAt(light, collider);
         }
-        Debug.Log(collider.name + ": " + intensity);
         return intensity;
     }
 
