@@ -22,6 +22,12 @@ public class Direction
         };
     }
 
+    public static Vector3 Rotate(Vector3 currentDirection, bool clockwise = true)
+    {
+        int sign = clockwise ? -1 : 1;
+        return Quaternion.Euler(0f, 0f, sign * 90) * currentDirection;        
+    }
+
     public static Vector3 AsVector(FourWay direction)
     {
         return direction switch

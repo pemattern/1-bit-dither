@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
+
 public interface IInteractable
 {
-    public void Interact();
-    public void UndoInteract();
+    public Task Interact();
+    public Task UndoInteract();
 }

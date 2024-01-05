@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -23,14 +24,15 @@ public class InteractableLight : MonoBehaviour, IInteractable
         }
     }
 
-    public void Interact()
+    public async Task Interact()
     {
         _light.enabled = !_light.enabled;
-        _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;        
+        _spriteRenderer.sprite = _light.enabled ? _onSprite : _offSprite;
+        await Awaitable.WaitForSecondsAsync(Consts.LerpDuration);       
     }
 
-    public void UndoInteract()
+    public async Task UndoInteract()
     {
-        Interact();
+        await Interact();
     }
 }

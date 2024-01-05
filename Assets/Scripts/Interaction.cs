@@ -11,12 +11,12 @@ public class Interaction : ICommand
 
     public async Task Do()
     {
-        _interactable.Interact();
-        await Awaitable.WaitForSecondsAsync(0.1f);
+        await _interactable.Interact();
+        await Awaitable.WaitForSecondsAsync(Consts.LerpDuration);
     }
     public async Task Undo()
     {
-        _interactable.UndoInteract();
-        await Awaitable.WaitForSecondsAsync(0.1f);
+        await _interactable.UndoInteract();
+        await Awaitable.WaitForSecondsAsync(Consts.LerpDuration);
     }
 }
