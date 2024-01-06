@@ -19,4 +19,9 @@ public class Interaction : ICommand
         await _interactable.UndoInteract();
         await Awaitable.WaitForSecondsAsync(Consts.LerpDuration);
     }
+
+    public static bool CanInteract(Vector3 interactablePosition)
+    {
+        return PlayerController.Position + Direction.AsVector(PlayerController.Facing) == interactablePosition;
+    }
 }

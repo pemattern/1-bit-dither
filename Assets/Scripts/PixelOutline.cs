@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class PixelOutline : MonoBehaviour
 {
-    public bool Active => Vector3.Distance(_playerTransform.position, transform.position) < Consts.DistanceDelta;
+    public bool Active => Interaction.CanInteract(transform.position);
     [SerializeField] Transform _playerTransform;
     [SerializeField] PixelOutline[] _linkedOutlines;
     SpriteRenderer _spriteRenderer;

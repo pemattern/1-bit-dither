@@ -1,10 +1,17 @@
-using System.Threading.Tasks;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerController : MonoBehaviour
 {
+    private static PlayerController _instance;
     private Awaitable _inputDelay;
     private Vector3 _inputBuffer;
+    public static Direction.FourWay Facing { get; private set; }
+    public static Vector3 Position => _instance.transform.position;
+    void Awake()
+    {
+        _instance = this;
+    }
     async void Update()
     {
         if (Input.GetKey(KeyCode.Backspace) && !CommandScheduler.Locked)
@@ -35,12 +42,14 @@ public class PlayerController : MonoBehaviour
 
         if (input.magnitude > 0f && !CommandScheduler.Locked)
         {
-            Vector3 target = transform.position + input;
-            if (Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default", "Lightpassthrough")) || 
-                (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input))) return;
-
             _inputDelay = Awaitable.WaitForSecondsAsync(Consts.InputDelay);
-            CommandScheduler.Add(new Movement(transform, input));
+            Vector3 target = transform.position + input;
+
+            bool immoveable = Physics2D.OverlapCircle(target, Consts.OverlapCircleRadius, LayerMask.GetMask("Default", "Lightpassthrough")) || 
+                (Pushable.TryGetAt(target, out Pushable pushable) && !pushable.TryPush(input));
+
+            Facing = Direction.AsFourWay(input);
+            CommandScheduler.Add(new Movement(transform, input, immoveable));
             await CommandScheduler.Execute();
         }
     }

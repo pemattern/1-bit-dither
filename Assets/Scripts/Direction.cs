@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.TextCore;
+using UnityEngine.UIElements.Experimental;
 
 public class Direction
 {
@@ -20,6 +22,15 @@ public class Direction
             FourWay.Left => clockwise ? FourWay.Up : FourWay.Down,
             _ => FourWay.Up
         };
+    }
+
+    public static FourWay AsFourWay(Vector3 direction)
+    {
+        if (direction.normalized == Vector3.up) return FourWay.Up;
+        if (direction.normalized == Vector3.down) return FourWay.Down;
+        if (direction.normalized == Vector3.left) return FourWay.Left;
+        if (direction.normalized == Vector3.right) return FourWay.Right;
+        throw new System.Exception("Not a valid Vector.");
     }
 
     public static Vector3 Rotate(Vector3 currentDirection, bool clockwise = true)
