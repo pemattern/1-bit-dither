@@ -20,6 +20,7 @@ public class LightChanneler : MonoBehaviour, IInteractable
     void Start()
     {
         _currentDirection = Direction.AsVector(_startingDirection);
+        transform.rotation = GetRotation(_currentDirection);
         _channelerLight = GetComponent<Light2D>();
         _cosmeticLight = GetComponentInChildren<Light2D>();
         _collider = GetComponentInParent<CircleCollider2D>();
@@ -38,7 +39,7 @@ public class LightChanneler : MonoBehaviour, IInteractable
 
     public Vector3 GetDirection()
     {
-        return _currentDirection;
+        return transform.rotation * Vector3.up;
     }
 
     Quaternion GetRotation(Vector3 direction)
@@ -73,6 +74,7 @@ public class LightChanneler : MonoBehaviour, IInteractable
             await Awaitable.NextFrameAsync();
         }
         transform.rotation = GetRotation(_targetDirection);
+        Debug.Log(GetDirection());
     }
 
     public async Task UndoInteract()
