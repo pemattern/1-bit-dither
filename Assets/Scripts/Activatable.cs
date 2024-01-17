@@ -7,6 +7,7 @@ public class Activatable : MonoBehaviour
 {
     [SerializeField] private GameObject[] _gameObjects;
     [SerializeField] private Logic _activationLogic;
+    [SerializeField] private bool _invertActivation;
     private List<IActivator> _activators;
     void Start()
     {
@@ -22,13 +23,15 @@ public class Activatable : MonoBehaviour
 
     public bool IsActivated()
     {
+        bool result;
         switch (_activationLogic)
         {
-            case Logic.Or: return _activators.Where(x => x.IsActivated()).Any();
-            case Logic.And: return !_activators.Where(x => !x.IsActivated()).Any();
+            case Logic.Or: result = _activators.Where(x => x.IsActivated()).Any(); break;
+            case Logic.And: result = !_activators.Where(x => !x.IsActivated()).Any(); break;
             default: return false;
         }
-        
+        if (_invertActivation) return !result;
+        return result;
     }
 
     enum Logic

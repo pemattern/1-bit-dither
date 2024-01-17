@@ -26,7 +26,7 @@ public class LightProber : MonoBehaviour
             {
                 direction = collider.transform.position - light.transform.position;
             }
-            RaycastHit2D hit = Physics2D.Raycast(light.transform.position, direction.normalized, light.pointLightOuterRadius, LayerMask.GetMask("Default"));
+            RaycastHit2D hit = Physics2D.Raycast(light.transform.position, direction.normalized, light.pointLightOuterRadius, LayerMask.GetMask("Default", "Pushable", "LightProberCollider"));
             if (hit.collider == collider)
             {
                 result.Add(light);

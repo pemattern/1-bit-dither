@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class Pushable : MonoBehaviour
@@ -28,9 +29,14 @@ public class Pushable : MonoBehaviour
     public static bool TryGetAt(Vector3 position, out Pushable pushable)
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(position, Consts.OverlapCircleRadius);
-        if (colliders.Length > 0 && colliders[0].TryGetComponent(out pushable))
-            return true;
-        pushable = null;
-        return false;
+        pushable = null;        
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.TryGetComponent(out pushable))
+            {
+                break;
+            }
+        }
+        return pushable != null;
     }
 }

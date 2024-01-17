@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour
     {
         _instance = this;
     }
+    async void Start()
+    {
+        CommandScheduler.Add(new Movement(transform, Vector3.up, true));
+        await CommandScheduler.Execute();
+    }
     async void Update()
     {
         if (Input.GetKey(KeyCode.Backspace) && !CommandScheduler.Locked)

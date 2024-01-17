@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(Activatable), typeof(SpriteRenderer), typeof(Collider2D))]
 public class Door : MonoBehaviour
@@ -7,6 +8,7 @@ public class Door : MonoBehaviour
     private Activatable _activatable;
     private SpriteRenderer _spriteRenderer;
     private Collider2D _collider;
+    private ShadowCaster2D _shadowCaster;
 
     void OnEnable()
     {
@@ -18,6 +20,7 @@ public class Door : MonoBehaviour
         _activatable = GetComponent<Activatable>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _collider = GetComponent<Collider2D>();
+        _shadowCaster = GetComponent<ShadowCaster2D>();
     }
 
     void MessageStatus()
@@ -25,6 +28,7 @@ public class Door : MonoBehaviour
         bool isActivated = _activatable.IsActivated();
         _spriteRenderer.sprite = isActivated ? _openSprite : _closedSprite;
         _collider.enabled = !isActivated;
+        if (_shadowCaster != null) _shadowCaster.enabled = !isActivated;
     }
     void OnDisable()
     {

@@ -5,16 +5,15 @@ using UnityEngine.Rendering.Universal;
 [RequireComponent(typeof(Light2D))]
 public class LightChanneler : MonoBehaviour, IInteractable
 {
-    [SerializeField] private Transform _playerTransform;
     [SerializeField] private Direction.FourWay _startingDirection;
+    [SerializeField] private Collider2D _collider;
     private Vector3 _currentDirection;
-    private Light2D _channelerLight, _cosmeticLight;
-    private Collider2D _collider;
-
+    private Light2D _channelerLight;
+    
     void OnEnable()
     {
-        CommandScheduler.OnUpdateCommand += UpdateLight;
-        CommandScheduler.OnCompletedCommand += UpdateLight;
+        CommandScheduler.OnUpdateCommand += UpdateLights;
+        CommandScheduler.OnCompletedCommand += UpdateLights;
     }
 
     void Start()
@@ -22,19 +21,16 @@ public class LightChanneler : MonoBehaviour, IInteractable
         _currentDirection = Direction.AsVector(_startingDirection);
         transform.rotation = GetRotation(_currentDirection);
         _channelerLight = GetComponent<Light2D>();
-        _cosmeticLight = GetComponentInChildren<Light2D>();
-        _collider = GetComponentInParent<CircleCollider2D>();
-        UpdateLight();
+        UpdateLights();
     }
 
-    void UpdateLight()
+    void UpdateLights()
     {
-        float intensity = LightProber.TotalIntensityAt(_collider, _channelerLight, _cosmeticLight);
+        float intensity = LightProber.TotalIntensityAt(_collider, _channelerLight);
+        _channelerLight.intensity = Mathf.Clamp01(intensity);
+
         bool enabled = intensity > 0f;
         _channelerLight.enabled = enabled;
-        _cosmeticLight.enabled = enabled;
-        _channelerLight.intensity = Mathf.Clamp01(intensity);
-        _cosmeticLight.intensity = Mathf.Clamp01(intensity);
     }
 
     public Vector3 GetDirection()
@@ -74,7 +70,6 @@ public class LightChanneler : MonoBehaviour, IInteractable
             await Awaitable.NextFrameAsync();
         }
         transform.rotation = GetRotation(_targetDirection);
-        Debug.Log(GetDirection());
     }
 
     public async Task UndoInteract()
@@ -97,7 +92,7 @@ public class LightChanneler : MonoBehaviour, IInteractable
 
     void OnDisable()
     {
-        CommandScheduler.OnUpdateCommand -= UpdateLight;
-        CommandScheduler.OnCompletedCommand -= UpdateLight;
+        CommandScheduler.OnUpdateCommand -= UpdateLights;
+        CommandScheduler.OnCompletedCommand -= UpdateLights;
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 public class PixelOutline : MonoBehaviour
 {
     public bool Active => Interaction.CanInteract(transform.position);
-    [SerializeField] Transform _playerTransform;
     [SerializeField] PixelOutline[] _linkedOutlines;
     SpriteRenderer _spriteRenderer;
     Material _outlineMaterial;

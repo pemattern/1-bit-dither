@@ -5,7 +5,6 @@ using UnityEngine.Rendering.Universal;
 [RequireComponent(typeof(SpriteRenderer))]
 public class InteractableLight : MonoBehaviour, IInteractable
 {
-    [SerializeField] Transform _playerTransform;
     [SerializeField] Sprite _onSprite, _offSprite;
     private Light2D _light;
     private SpriteRenderer _spriteRenderer;
